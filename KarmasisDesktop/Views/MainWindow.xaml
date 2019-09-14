@@ -1,0 +1,81 @@
+﻿<Window x:Class="KarmasisDesktop.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KarmasisDesktop.Views"
+        mc:Ignorable="d"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+  xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+          xmlns:converter="clr-namespace:KarmasisDesktopCore.Converters;assembly=KarmasisDesktopCore"
+        Title="{Binding Result}" WindowState="Maximized">
+    <Window.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding ContentControlLoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+
+        <TabControl Visibility="{Binding ShowMain,Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Tickets">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60*"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="50*"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Tickets" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" >
+                        <dxg:GridControl Name="grid"  AutoGenerateColumns="AddNew"  SelectionMode="Row"  SelectedItem="{Binding SelectedTicket,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding TicketList}">
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="ID" Header="ID" Visible="False"/>
+                                <dxg:GridColumn FieldName="Subject" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="Description" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="CustomerName" ReadOnly="True"  />
+                                <dxg:GridColumn FieldName="ProductName" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="SolvedBy"  ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="Solved" ReadOnly="True"/>
+                                <dxg:GridColumn FieldName="TimeCreated" ReadOnly="True" />
+                            </dxg:GridControl.Columns>
+                            <dxg:GridControl.View>
+                                <dxg:TableView 
+                                    EnableImmediatePosting="True"
+                                    AutoWidth="True" 
+                                    ShowAutoFilterRow="True" 
+                                     ShowGroupPanel="True"
+                                    AllowColumnFiltering="True"
+                                    WaitIndicatorType="Panel">
+                                    <dxg:TableView.RowCellMenuCustomizations>
+                                        <dxb:BarButtonItem Glyph="{dx:DXImage Image=Add_16x16.png}" LargeGlyph="{dx:DXImage Image=Add_32x32.png}" Content="Solved" Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.SolvedCommand, RelativeSource={RelativeSource Self}}" />
+                                        <dxb:BarButtonItem Glyph="{dx:DXImage Image=Delete_16x16.png}" LargeGlyph="{dx:DXImage Image=Delete_32x32.png}" Content="Unsolved" Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.UnSolvedCommand, RelativeSource={RelativeSource Self}}" />
+                                    </dxg:TableView.RowCellMenuCustomizations>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="CellValueChanged">
+                                            <i:InvokeCommandAction Command="{Binding TicketCellValueChanged}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </GroupBox>
+                    <GroupBox Header="TOP 5 SolvedBy"  Grid.Column="1" Grid.Row="0">
+                        <local:TopSolvedChartView DataContext="{Binding TopSolvedChartViewModel}"/>
+                    </GroupBox>
+                    <GroupBox Header="TOP 5 ProductName" Grid.Column="1" Grid.Row="1">
+                        <local:TopProductChartView DataContext="{Binding TopProductChartViewModel}"/>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <local:LoginControlView x:Name="loginCtrl" DataContext="{Binding LoginControlViewModel}" Visibility="{Binding CheckUser,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </Grid>
+</Window>
