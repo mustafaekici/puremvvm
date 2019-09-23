@@ -43,13 +43,4 @@ Müşterilerden gelen talepleri elasticsearch veritabanına
 • Her hangi bir dosyadan okuyup bulk insert yaparak
 • Ayrı bir UI projesi oluşturarak
 kaydedebilirsiniz.
-Proje sunumunda dikkat edilecek kriterler
-• Kullanıcı arayüzünün kullanıcı dostu olarak tasarlanması
-• Responsive UI
-• WCF ve UI kaynak kodlarının düzgün, açık ve anlaşılır olması.
-• Projenin yapısı
-• Projenin sunumu
-• Bu proje ile elasticsearch veritabanı ile ilgili edinilen bilgiler
-• Bu proje ile mvvm teknolojisi hakkında edinilen bilgiler
-• Projenin zorlandığınız ya da kolayca gerçekleştirdiğiniz noktaları
-• Exception handling
+
